@@ -5,7 +5,6 @@ Defines feature groups, builds the sklearn pipeline, and runs Optuna to findthe 
 
 import joblib
 import json
-import numpy as np
 import optuna
 import pandas as pd
 from lightgbm import LGBMRegressor
@@ -13,6 +12,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, TargetEncoder
+from sklearn.model_selection import train_test_split, cross_val_score
 
 # Explicitly defining column groups for clarity and to avoid hardcoding column names in the pipeline
 # This makes it easy to add/remove features without having to change the pipeline code
@@ -85,7 +85,7 @@ def build_pipeline() -> Pipeline:
             ),
             (
                 "target_enc",
-                # smooth="auto" lets sklearn decide regularisation strength based on sample size
+                # smooth="auto" lets sklearn decide regularization strength based on sample size
                 TargetEncoder(smooth="auto"),
                 TARGET_ENCODE_COLS,
             ),
@@ -97,3 +97,65 @@ def build_pipeline() -> Pipeline:
         # verbose=-1 silences LightGBM training output
         ("model", LGBMRegressor(random_state=42, verbose=-1)),
     ])
+    
+def train(df: pd.DataFrame) -> tuple:
+    """ 
+    Split data, tune hyperparameters with Optuna, and train the final model.
+    
+    :param df: Fully engineered DataFrame from `build_features()`.
+    :type df: pd.DataFrame
+
+    :returns: Tuple of (fitted Pipeline, X_test, y_test)
+    :rtype: tuple
+    """
+    X = df[NUMERIC_COLS + BINARY_COLS + OHE_COLS + TARGET_ENCODE_COLS]
+    y = df['log_price']
+    
+    # Stratify by price quintile to ensure representative splits across price ranges
+    price_quintiles = pd.qcut(y, q=5, labels=False)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=price_quintiles
+    )
+    
+    def objective(trial): 
+        params = {
+            "n_estimators":      trial.suggest_int("n_estimators", 100, 1000),
+            "learning_rate":     trial.suggest_float("learning_rate", 1e-3, 0.3, log=True),
+            "max_depth":         trial.suggest_int("max_depth", 3, 10),
+            "num_leaves":        trial.suggest_int("num_leaves", 20, 200),
+            "min_child_samples": trial.suggest_int("min_child_samples", 5, 100),
+            "subsample":         trial.suggest_float("subsample", 0.5, 1.0),
+            "colsample_bytree":  trial.suggest_float("colsample_bytree", 0.5, 1.0),
+            "reg_alpha":         trial.suggest_float("reg_alpha", 1e-8, 10.0, log=True),
+            "reg_lambda":        trial.suggest_float("reg_lambda", 1e-8, 10.0, log=True),
+        }
+        
+        pipeline = build_pipeline()
+        pipeline.set_params(model=LGBMRegressor(**params, random_state=42, verbose=-1))
+        
+        # CV on training set only - test set is strictly for final evaluation after tuning
+        scores = cross_val_score(
+            pipeline, X_train, y_train, cv=5, 
+            scoring="neg_root_mean_squared_error"
+        )
+        
+        return -scores.mean()
+    
+    # Suppress Optuna's verbose logging
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
+    
+    print("Running Optuna hyperparameter tuning (100 trials)...")
+    study = optuna.create_study(direction="minimize")
+    study.optimize(objective, n_trials=100)
+    
+    print(f"Best CV RMSE: {study.best_value:.4f}")
+    print(f"Best params: {study.best_params}")
+    
+    # Retrain on full training set using best hyperparameters
+    final_pipeline = build_pipeline()
+    final_pipeline.set_params(
+        model=LGBMRegressor(**study.best_params, random_state=42, verbose=-1)
+    )
+    final_pipeline.fit(X_train, y_train)
+    
+    return final_pipeline, X_test, y_test
