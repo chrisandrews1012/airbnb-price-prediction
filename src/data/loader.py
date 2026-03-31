@@ -47,9 +47,9 @@ def load_and_preprocess_data(filepath: str) -> pd.DataFrame:
     # Parse price column: remove $ and commas, convert to float
     df['price'] = df['price'].str.replace('[\$,]', '', regex=True).astype(float)
     
-    # Remove null, zero, and extreme outlier prices (above 99th percentile)
-    p99 = df['price'].quantile(0.99)
-    df = df[(df['price'].notna() & df['price'] > 0) & (df['price'] <= p99)]
+    # Remove null, zero, and extreme outlier prices (above £900/night)
+    # Listings above £900 are rare luxury properties that skew the model
+    df = df[(df['price'].notna() & df['price'] > 0) & (df['price'] <= 900)]
     
     # Log-transform the price to reduce skewness - this is what the model will train on
     # Price is right-skewed (a few very expensive listings), so log transformation helps normalize it

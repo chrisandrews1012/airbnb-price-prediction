@@ -94,8 +94,7 @@ def build_pipeline() -> Pipeline:
 
     return Pipeline([
         ("preprocessor", preprocessor),
-        # verbose=-1 silences LightGBM training output
-        ("model", LGBMRegressor(random_state=42, verbose=-1)),
+        ("model", LGBMRegressor(random_state=42, verbose=-1))    # verbose=-1 silences LightGBM training output
     ])
     
 def train(df: pd.DataFrame) -> tuple:
