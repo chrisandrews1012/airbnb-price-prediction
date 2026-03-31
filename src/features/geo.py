@@ -11,6 +11,7 @@ Simple coordinate differences would be inaccurate, especially for listings farth
 The formula is implemented using numpy so it runs across the entire latitude/longitude column at once
 (vectorised) rather than looping row by row, so no external geospatial libraries are needed.
 """
+
 import pandas as pd
 import numpy as np
 
