@@ -54,18 +54,18 @@ def _haversine(lat1: np.ndarray, lon1: np.ndarray, lat2: float, lon2: float) -> 
 
 def add_geo_features(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Add geospatial distance and neighborhood flag features. 
+    Add geospatial distance and neighbourhood flag features. 
     
     :param df: DataFrame containing 'latitude', 'longitude', and 'neighbourhood_cleansed' columns.
     :type df: pd.DataFrame
     
-    :return: DataFrame with distance columns and neighborhood binary flags added.
+    :return: DataFrame with distance columns and neighbourhood binary flags added.
     :rtype: pd.DataFrame
     """
     for col, (lat, lon) in LANDMARKS.items():
         df[col] = _haversine(df['latitude'].values, df['longitude'].values, lat, lon)
         
-    # Binary neighborhood flags for Old Town and New Town, which are popular and pricier areas
+    # Binary neighbourhood flags for Old Town and New Town, which are popular and pricier areas
     df['is_old_town'] = df['neighbourhood_cleansed'].isin(OLD_TOWN_NEIGHBORHOODS).astype(int)
     df['is_new_town'] = df['neighbourhood_cleansed'].isin(NEW_TOWN_NEIGHBORHOODS).astype(int)
     
