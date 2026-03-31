@@ -6,10 +6,7 @@ tend to charge more and receive better reviews.
 
 import pandas as pd
 
-# The date the Inside Airbnb data was scraped.
-# Used to calculate temporal features like host_tenure_days and days_since_review.
-# Update this if using a newer or older scrape of the data.  
-SCRAPE_DATE = pd.Timestamp("2025-09-21")
+from src.features.constants import SCRAPE_DATE
 
 # Inside Airbnb stores booleans as "t" and "f" strings, not Python True/False
 BOOL_COLS = ["host_is_superhost", "host_has_profile_pic", "host_identity_verified", "instant_bookable"]
