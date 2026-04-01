@@ -99,7 +99,14 @@ Evaluated on a held-out test set of 967 Edinburgh listings (September 2025).
 ├── scripts/
 │   └── train_model.py
 ├── models/
+│   ├── pipeline.joblib
+│   ├── shap_explainer.joblib
+│   ├── benchmark_results.json
+│   └── model_metadata.json
 ├── data/
+│   ├── listings.csv
+│   └── processed/
+│       └── listings_clean.parquet
 ├── app.py
 ├── Dockerfile
 ├── docker-compose.yml
