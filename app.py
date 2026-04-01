@@ -12,7 +12,6 @@ with open("app/style.css") as f:
 pages = [
     st.Page("app/pages/price_predictor.py", title="Price Predictor", default=True),
     st.Page("app/pages/market_analysis.py", title="Market Analysis"),
-    st.Page("app/pages/listing_optimizer.py", title="Listing Optimizer"),
     st.Page("app/pages/neighbourhood_explorer.py", title="Neighbourhood Explorer"),
     st.Page("app/pages/model_insights.py", title="Model Insights"),
 ]

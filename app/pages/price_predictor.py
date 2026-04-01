@@ -154,10 +154,10 @@ with col_results:
         input_df = pd.DataFrame([input_data])
         price = predict_price(pipeline, input_df)
 
-        # Confidence range using model MAE (£43.74)
-        mae = 43.74
-        low = max(0, price - mae)
-        high = price + mae
+        # Confidence range using model Median AE (£23.44) — more representative of typical error than MAE
+        median_ae = 23.44
+        low = max(0, price - median_ae)
+        high = price + median_ae
 
         st.markdown(f"""
             <div class="prediction-card">

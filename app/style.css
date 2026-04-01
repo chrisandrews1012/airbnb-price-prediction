@@ -163,6 +163,49 @@ h1, h2, h3 {
     color: #ff4b4b;
 }
 
+/* ── SHAP feature cards ── */
+.shap-card {
+    background-color: #1e1e2e;
+    border-radius: 10px;
+    padding: 0.9rem 1.5rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #2e2e3e;
+}
+
+.shap-card-positive {
+    border-left: 4px solid #3ddc84;
+}
+
+.shap-card-negative {
+    border-left: 4px solid #ff4b4b;
+}
+
+.shap-feature-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.shap-feature-sub {
+    font-size: 0.8rem;
+    color: #a0a0b0;
+    margin-top: 0.2rem;
+}
+
+.shap-badge-positive {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #3ddc84;
+}
+
+.shap-badge-negative {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ff4b4b;
+}
+
 /* ── Divider ── */
 hr {
     border-color: #2e2e3e;

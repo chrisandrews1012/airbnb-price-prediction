@@ -24,7 +24,6 @@ tab1, tab2, tab3, tab4 = st.tabs(
 )
 
 # Price Distribution 
-
 with tab1:
     st.markdown('<div class="section-header">Price Distribution</div>', unsafe_allow_html=True)
 
@@ -56,7 +55,6 @@ with tab1:
     )
 
 # Price by Room Type 
-
 with tab2:
     st.markdown('<div class="section-header">Price by Room Type</div>', unsafe_allow_html=True)
 
@@ -78,14 +76,16 @@ with tab2:
                     <div class="listing-card-title">{row['room_type']}</div>
                     <div class="listing-card-subtitle">{int(row['listing_count'])} listings</div>
                 </div>
-                <div class="listing-card-price">£{row['median_price']:.0f}</div>
+                <div>
+                        <div class="listing-card-price">£{row['median_price']:.0f}</div>
+                        <div class="listing-card-subtitle" style="text-align:right">median/night</div>
+                    </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-#  Price by Neighbourhood 
-
+# Price by Neighbourhood 
 with tab3:
     st.markdown('<div class="section-header">Price by Neighbourhood</div>', unsafe_allow_html=True)
 
@@ -110,14 +110,16 @@ with tab3:
                     <div class="listing-card-title">{row['neighbourhood_cleansed']}</div>
                     <div class="listing-card-subtitle">{int(row['listing_count'])} listings</div>
                 </div>
-                <div class="listing-card-price">£{row['median_price']:.0f}</div>
+                <div>
+                        <div class="listing-card-price">£{row['median_price']:.0f}</div>
+                        <div class="listing-card-subtitle" style="text-align:right">median/night</div>
+                    </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
 # Price vs. Capacity 
-
 with tab4:
     st.markdown('<div class="section-header">Price vs. Capacity</div>', unsafe_allow_html=True)
 
@@ -141,7 +143,10 @@ with tab4:
                     <div class="listing-card-title">{guest_label}</div>
                     <div class="listing-card-subtitle">{int(row['listing_count'])} listings</div>
                 </div>
-                <div class="listing-card-price">£{row['median_price']:.0f}</div>
+                <div>
+                        <div class="listing-card-price">£{row['median_price']:.0f}</div>
+                        <div class="listing-card-subtitle" style="text-align:right">median/night</div>
+                    </div>
             </div>
             """,
             unsafe_allow_html=True,
