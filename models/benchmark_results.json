@@ -1,0 +1,26 @@
+[
+  {
+    "model": "Ridge",
+    "rmse": 0.3867,
+    "mae": 0.2677,
+    "r2": 0.5774
+  },
+  {
+    "model": "Random Forest",
+    "rmse": 0.3531,
+    "mae": 0.2482,
+    "r2": 0.6495
+  },
+  {
+    "model": "XGBoost",
+    "rmse": 0.3491,
+    "mae": 0.2487,
+    "r2": 0.6564
+  },
+  {
+    "model": "LightGBM",
+    "rmse": 0.34,
+    "mae": 0.2378,
+    "r2": 0.674
+  }
+]
