@@ -1,0 +1,23 @@
+# Raw data — CC BY 4.0 license, do not redistribute
+data/listings.csv
+
+# Python artifacts
+__pycache__/
+*.py[codz]
+*.egg-info/
+.venv/
+.env
+
+# Training scripts — only needed locally, not at runtime
+scripts/
+
+# Dev tools
+.git/
+.gitignore
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Notebooks
+*.ipynb
+.ipynb_checkpoints/

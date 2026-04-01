@@ -207,9 +207,5 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Project data (CC BY 4.0 license — do not redistribute raw data)
+# Raw data — too large for GitHub and CC BY 4.0 requires attribution
 data/listings.csv
-data/processed/
-
-# Trained model artifacts
-models/*.joblib
