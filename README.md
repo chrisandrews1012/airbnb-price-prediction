@@ -115,32 +115,54 @@ Evaluated on a held-out test set of 967 Edinburgh listings (September 2025).
 
 ---
 
-## How to Run
+## Getting Started
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/) and Docker Compose
+- Python 3.11+ and [uv](https://docs.astral.sh/uv/)
 
 ### With Docker (recommended)
 
-```bash
-docker compose up --build
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/airbnb-price-prediction.git
+   cd airbnb-price-prediction
+   ```
 
-Then open [http://localhost:8501](http://localhost:8501) in your browser.
+2. Build and start the app:
+   ```bash
+   docker compose up --build
+   ```
+
+3. Visit [http://localhost:8501](http://localhost:8501) in your browser.
 
 ### Without Docker
 
-Requires [uv](https://github.com/astral-sh/uv).
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/airbnb-price-prediction.git
+   cd airbnb-price-prediction
+   ```
 
-The raw dataset is not included in this repository due to its size. Before running the app you will need to:
+2. Sync the dependencies:
+   ```bash
+   uv sync
+   ```
 
-1. Download `listings.csv` for Edinburgh from [Inside Airbnb](http://insideairbnb.com/get-the-data/) and place it at `data/listings.csv`
-2. Run the training pipeline to generate the processed data and model files:
-```bash
-uv run python scripts/train_model.py
-```
-3. Then start the app:
-```bash
-uv sync
-uv run streamlit run app.py
-```
+3. The raw dataset is not included in this repository due to its size. Download `listings.csv` for Edinburgh from [Inside Airbnb](http://insideairbnb.com/get-the-data/) and place it at `data/listings.csv`.
+
+4. Run the training pipeline to generate the processed data and model files:
+   ```bash
+   uv run python scripts/train_model.py
+   ```
+
+5. Start the app:
+   ```bash
+   uv run streamlit run app.py
+   ```
+
+6. Visit [http://localhost:8501](http://localhost:8501) in your browser.
 
 ---
 
