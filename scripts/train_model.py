@@ -1,26 +1,15 @@
-""" 
-Training Script -> Run this once to produce all model artifacts 
-
-Usage:
-    uv run python scripts/train_model.py
-    
-Outputs:
-    models/pipeline.joblib                      - The fitted sklearn Pipeline (preprocessing + model)
-    models/shap_explainer.joblib                - The fitted SHAP TreeExplainer for generating explanations in the API
-    models/model_metadata.json                  - Evaluation metrics on the held-out test set
-    models/benchmark_metrics.json               - Evaluation metrics for model comparison 
-    data/processed/listings_clean.parquet       - The processed dataset with engineered features, saved in efficient Parquet format for future use
-"""
+# Run once to preprocess data, benchmark models, train, and save all artifacts.
+# Usage: uv run python scripts/train_model.py
 
 import joblib
 import shap
 
-from src.data.preprocessor import build_features, save_processed
-from src.models.benchmark import run_benchmark
-from src.models.evaluate import evaluate
-from src.models.train import train, NUMERIC_COLS, BINARY_COLS, OHE_COLS, TARGET_ENCODE_COLS
+from airbnb_price_prediction.data.preprocessor import build_features, save_processed
+from airbnb_price_prediction.models.benchmark import run_benchmark
+from airbnb_price_prediction.models.evaluate import evaluate
+from airbnb_price_prediction.models.train import train, NUMERIC_COLS, BINARY_COLS, OHE_COLS, TARGET_ENCODE_COLS
 
-RAW_DATA_PATH       = "data/listings.csv"
+RAW_DATA_PATH       = "data/raw/listings.csv"
 PROCESSED_DATA_PATH = "data/processed/listings_clean.parquet"
 PIPELINE_PATH       = "models/pipeline.joblib"
 EXPLAINER_PATH      = "models/shap_explainer.joblib"

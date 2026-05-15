@@ -6,14 +6,14 @@ for use in model training and the Streamlit app.
 
 import pandas as pd
 
-from src.data.loader import load_and_preprocess_data
-from src.features.amenities import parse_amenities
-from src.features.geo import add_geo_features
-from src.features.text import add_text_features
-from src.features.bathrooms import parse_bathrooms
-from src.features.host import add_host_features
-from src.features.temporal import add_temporal_features
-from src.features.bedroom import add_bedroom_features
+from airbnb_price_prediction.data.loader import load_and_preprocess_data
+from airbnb_price_prediction.features.amenities import parse_amenities
+from airbnb_price_prediction.features.geo import add_geo_features
+from airbnb_price_prediction.features.text import add_text_features
+from airbnb_price_prediction.features.bathrooms import parse_bathrooms
+from airbnb_price_prediction.features.host import add_host_features
+from airbnb_price_prediction.features.temporal import add_temporal_features
+from airbnb_price_prediction.features.bedroom import add_bedroom_features
 
 def build_features(filepath: str) -> pd.DataFrame:
     """ 

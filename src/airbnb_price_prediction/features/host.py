@@ -6,7 +6,7 @@ tend to charge more and receive better reviews.
 
 import pandas as pd
 
-from src.features.constants import SCRAPE_DATE
+from airbnb_price_prediction.features.constants import SCRAPE_DATE
 
 # Inside Airbnb stores booleans as "t" and "f" strings, not Python True/False
 BOOL_COLS = ["host_is_superhost", "host_has_profile_pic", "host_identity_verified", "instant_bookable"]

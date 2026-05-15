@@ -1,179 +1,91 @@
-# Edinburgh Airbnb Host Intelligence Platform
+# Edinburgh Airbnb Price Predictor
 
-A full-stack machine learning application that predicts nightly listing prices for Edinburgh Airbnb hosts. Built with LightGBM, Streamlit, containerized with Docker.
+![GitHub last commit](https://img.shields.io/github/last-commit/chrisandrews1012/airbnb-price-prediction)
+![GitHub repo size](https://img.shields.io/github/repo-size/chrisandrews1012/airbnb-price-prediction)
+![Python Version](https://img.shields.io/badge/python-3.11-blue)
+![Stack](https://img.shields.io/badge/stack-LightGBM%20%7C%20Streamlit%20%7C%20SHAP%20%7C%20Optuna-blue)
 
-## Overview
+Predicts nightly Airbnb prices for Edinburgh listings and explains what drives them.
 
-The project follows an end-to-end ML pipeline, from raw data through to a deployed Streamlit application.
+## Problem Statement
 
-**1. Data Ingestion**:
-Raw listing data is loaded from the Inside Airbnb Edinburgh dataset (September 2025 snapshot, 4,832 listings after cleaning). Prices are parsed, capped at £900 to remove extreme outliers, and log-transformed to normalize the distribution before modeling.
+Edinburgh listings vary wildly by location, amenity set, host tenure, and listing quality. A raw price estimate isn't that useful on its own. The challenge is building a model that captures enough signal across all those dimensions while staying interpretable enough that a host can actually act on the output.
 
-**2. Feature Engineering**:
-Features are extracted across several modules:
-- **Geospatial**: Haversine distances to Edinburgh Castle, Waverley Station, the Royal Mile, and the airport. Binary flags for Old Town and New Town.
-- **Amenities**: Total amenity count plus 13 binary flags for amenities found to influence price (WiFi, pool, hot tub, EV charger, etc.)
-- **Host**: Tenure in days, response time (ordinal encoded), response rate, superhost and instant bookable flags.
-- **Temporal**: Days since last review, listing age in days.
-- **Text**: Title and description length, premium keyword flag.
-- **Bathrooms**: Parsed from free-text, shared bath flag, half-bath handling.
+## Approach
 
-**3. Modeling**:
-Four models were benchmarked on the same train/test split: Ridge, Random Forest, XGBoost, and LightGBM. LightGBM won on all metrics and was selected for hyperparameter tuning with Optuna (100 trials, 5-fold cross-validation). The final model explains 66.6% of price variance with a median absolute error of £23.44.
+Feature engineering runs across six modules: geospatial distances to key Edinburgh landmarks, amenity parsing with binary flags for high-signal items, host tenure and response metrics, temporal signals from review history, text features from listing titles and descriptions, and bathroom parsing from free text.
 
-**4. Explainability** *(work in progress)*:
-A SHAP TreeExplainer is fitted on the training set and saved alongside the pipeline. At inference time, SHAP values are computed per prediction and filtered to only the features the user can control, giving a per-input breakdown of what drove the predicted price.
+Four models were benchmarked on the same train/test split: Ridge, Random Forest, XGBoost, and LightGBM. LightGBM won on all metrics and was tuned with Optuna (100 trials, 5-fold cross-validation). A SHAP TreeExplainer is fitted on the training set and used at inference time to show which features drove each prediction.
 
-**5. Application**:
-A four-page Streamlit app provides price prediction, market analysis, neighbourhood exploration, and model insights. All pages share a consistent dark-theme CSS. The app is containerised with Docker for reproducible deployment.
+The app is a four-page Streamlit interface covering price prediction, market analysis, neighbourhood exploration, and model insights.
 
----
+## Results
 
-## Features
-
-- **Price Predictor**: Enter your listing details and get a predicted nightly price with a confidence range and SHAP-based breakdown of the factors driving it *(SHAP breakdown is a work in progress)*
-- **Market Analysis**: Explore pricing across room types, neighbourhoods, and guest capacity
-- **Neighbourhood Explorer**: Drill into per-neighbourhood pricing and listing statistics
-- **Model Insights**: Model performance metrics, benchmark comparisons, feature importances, and notes on possible improvements
-
----
-
-## Tech Stack
-
-| Layer | Tools |
-|---|---|
-| Data processing | pandas, numpy |
-| Feature engineering | scikit-learn, haversine |
-| Modeling | LightGBM, XGBoost, Random Forest, Ridge |
-| Hyperparameter tuning | Optuna (100 trials, 5-fold CV) |
-| Explainability | SHAP TreeExplainer |
-| Frontend | Streamlit |
-| Containerization | Docker |
-
----
-
-## Model Performance
-
-Evaluated on a held-out test set of 967 Edinburgh listings (September 2025).
+Evaluated on a held-out test set of 967 Edinburgh listings (September 2025 snapshot, 4,832 listings after cleaning).
 
 | Metric | Value |
 |---|---|
+| R² | 0.666 |
 | RMSE | £78.58 |
 | MAE | £43.74 |
-| MAPE | 22.2% |
-| R² | 0.666 |
 | Median AE | £23.44 |
+| MAPE | 22.2% |
 
-> For more than half of all predictions the model is within £23.44 of the actual price.
+For more than half of all predictions the model is within £23.44 of the actual price.
 
----
+## How to Run
 
-## Project Structure
+```bash
+git clone https://github.com/chrisandrews1012/airbnb-price-prediction.git
+cd airbnb-price-prediction
+uv sync
+```
+
+The trained model artifacts are included in the repo, so you can run the app straight away:
+
+```bash
+uv run streamlit run app.py
+```
+
+To retrain from scratch, download `listings.csv` for Edinburgh from [Inside Airbnb](http://insideairbnb.com/get-the-data/), place it at `data/raw/listings.csv`, and run:
+
+```bash
+uv run python scripts/train_model.py
+```
+
+**Docker**
+
+```bash
+docker compose up --build
+```
+
+## File Structure
 
 ```
-├── app/
-│   ├── pages/
-│   │   ├── price_predictor.py
-│   │   ├── market_analysis.py
-│   │   ├── neighbourhood_explorer.py
-│   │   └── model_insights.py
-│   └── style.css
-├── src/
-│   ├── data/
-│   │   ├── loader.py
-│   │   └── preprocessor.py
-│   ├── features/
-│   │   ├── amenities.py
-│   │   ├── bathrooms.py
-│   │   ├── bedroom.py
-│   │   ├── constants.py
-│   │   ├── geo.py
-│   │   ├── host.py
-│   │   ├── temporal.py
-│   │   └── text.py
-│   └── models/
-│       ├── benchmark.py
-│       ├── evaluate.py
-│       ├── predict.py
-│       └── train.py
+airbnb-price-prediction/
+├── app.py
+├── docker-compose.yml
+├── Dockerfile
+├── pyproject.toml
 ├── scripts/
 │   └── train_model.py
-├── models/
-│   ├── pipeline.joblib
-│   ├── shap_explainer.joblib
-│   ├── benchmark_results.json
-│   └── model_metadata.json
 ├── data/
-│   ├── listings.csv
-│   └── processed/
-│       └── listings_clean.parquet
-├── app.py
-├── Dockerfile
-├── docker-compose.yml
-└── pyproject.toml
+│   ├── raw/
+│   ├── interim/
+│   ├── processed/
+│   └── external/
+├── models/
+├── notebooks/
+├── reports/
+│   └── figures/
+└── src/
+    └── airbnb_price_prediction/
+        ├── app/
+        ├── data/
+        ├── features/
+        └── models/
 ```
 
----
+## License
 
-## Getting Started
-
-### Prerequisites
-
-- [Docker](https://www.docker.com/) and Docker Compose
-- Python 3.11+ and [uv](https://docs.astral.sh/uv/)
-
-### With Docker (recommended)
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/airbnb-price-prediction.git
-   cd airbnb-price-prediction
-   ```
-
-2. Build and start the app:
-   ```bash
-   docker compose up --build
-   ```
-
-3. Visit [http://localhost:8501](http://localhost:8501) in your browser.
-
-### Without Docker
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/airbnb-price-prediction.git
-   cd airbnb-price-prediction
-   ```
-
-2. Sync the dependencies:
-   ```bash
-   uv sync
-   ```
-
-3. The raw dataset is not included in this repository due to its size. Download `listings.csv` for Edinburgh from [Inside Airbnb](http://insideairbnb.com/get-the-data/) and place it at `data/listings.csv`.
-
-4. Run the training pipeline to generate the processed data and model files:
-   ```bash
-   uv run python scripts/train_model.py
-   ```
-
-5. Start the app:
-   ```bash
-   uv run streamlit run app.py
-   ```
-
-6. Visit [http://localhost:8501](http://localhost:8501) in your browser.
-
----
-
-## Data
-
-This project uses the Edinburgh listings dataset from [Inside Airbnb](http://insideairbnb.com/get-the-data/) (September 2025 snapshot).
-
-Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Credit: Inside Airbnb.
-
-The raw `listings.csv` is not included in this repository. To retrain the model from scratch:
-
-1. Download `listings.csv` for Edinburgh from Inside Airbnb
-2. Place it at `data/listings.csv`
-3. Run `uv run python scripts/train_model.py`
+This project is licensed under the [MIT License](LICENSE).

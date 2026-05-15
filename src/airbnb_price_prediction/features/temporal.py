@@ -7,7 +7,7 @@ established and trusted a listing is on the platform.
 
 import pandas as pd
 
-from src.features.constants import SCRAPE_DATE
+from airbnb_price_prediction.features.constants import SCRAPE_DATE
 
 def add_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
     """ 

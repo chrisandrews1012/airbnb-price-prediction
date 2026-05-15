@@ -13,7 +13,7 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import cross_validate
 from xgboost import XGBRegressor
 
-from src.models.train import BINARY_COLS, NUMERIC_COLS, OHE_COLS, TARGET_ENCODE_COLS, build_pipeline
+from airbnb_price_prediction.models.train import BINARY_COLS, NUMERIC_COLS, OHE_COLS, TARGET_ENCODE_COLS, build_pipeline
 
 CANDIDATE_MODELS = {
     "Ridge":         Ridge(),

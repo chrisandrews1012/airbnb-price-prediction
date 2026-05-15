@@ -1,7 +1,7 @@
 import joblib
 import pandas as pd
 import streamlit as st
-from src.models.predict import predict_price
+from airbnb_price_prediction.models.predict import predict_price
 
 @st.cache_resource
 def load_pipeline():
