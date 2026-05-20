@@ -75,15 +75,37 @@ airbnb-price-prediction/
 │   ├── processed/
 │   └── external/
 ├── models/
+│   ├── pipeline.joblib
+│   └── shap_explainer.joblib
 ├── notebooks/
 ├── reports/
 │   └── figures/
 └── src/
     └── airbnb_price_prediction/
         ├── app/
+        │   ├── pages/
+        │   │   ├── market_analysis.py
+        │   │   ├── model_insights.py
+        │   │   ├── neighbourhood_explorer.py
+        │   │   └── price_predictor.py
+        │   └── style.css
         ├── data/
+        │   ├── loader.py
+        │   └── preprocessor.py
         ├── features/
+        │   ├── amenities.py
+        │   ├── bathrooms.py
+        │   ├── bedroom.py
+        │   ├── constants.py
+        │   ├── geo.py
+        │   ├── host.py
+        │   ├── temporal.py
+        │   └── text.py
         └── models/
+            ├── benchmark.py
+            ├── evaluate.py
+            ├── predict.py
+            └── train.py
 ```
 
 ## License
